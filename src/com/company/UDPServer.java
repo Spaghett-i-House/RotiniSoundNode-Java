@@ -44,7 +44,7 @@ public class UDPServer {
             try {
                 DatagramPacket receivePacket = new DatagramPacket(this.receivedBytes, receivedBytes.length);
                 this.serverSocket.receive(receivePacket);
-                ByteBuffer newByteBuffer = ByteBuffer.allocate(receivePacket.getLength());
+                ByteBuffer newByteBuffer = ByteBuffer.wrap(receivePacket.getData());
                 Message receivedMessage = new Message(newByteBuffer);
                 this.handleMessage(receivedMessage);
             } catch (IOException e) {
@@ -57,7 +57,6 @@ public class UDPServer {
     private void handleMessage(Message newMessage){
         switch(Opcodes.fromInt(newMessage.getOpcode())){
             case GETINFO: //GetInfo
-
                 break;
             case PING: //ping
                 break;
@@ -69,6 +68,6 @@ public class UDPServer {
     }
 
     private boolean attemptReconnect(){
-
+        return true;
     }
 }

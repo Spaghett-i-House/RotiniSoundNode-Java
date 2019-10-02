@@ -1,29 +1,38 @@
 package com.company;
+import java.util.ArrayList;
 import java.util.Map;
+import org.json.*;
 
 public class MessageInfo extends Message {
-    //there are no extra components if it is being made from received message
+    /**
+     * MessageInfo Protocol:
+     *  opcode: 2bytes = 1
+     *  stringjson: string
+     *
+     *  stringjson fields:
+     *      devices: [devicename]
+     *      functions: [functionname: [(argname, argtype)]
+     */
+    private JSONObject responseJSON;
     private Map<String, Integer> devices;
     private Map<String, Map<String, String>> functions;
 
     MessageInfo(Message orig){
         // initialize parent
+        //
         super(orig);
-        char currentchar = orig.getMessage().getChar();
-        while(currentchar != 0x00){
-            if(currentchar == ':'){
-                int amtBauds =
-            }
-        }
-
     }
 
-    MessageInfo(Map<String, Integer> devices, Map<String, Map<String, String>> availableCommands) {
-        super();
+    MessageInfo(ArrayList<String> devices, Map<String, Map<String, String>> availableCommands) {
+        super(1);
+        this.responseJSON = new JSONObject();
+        this.responseJSON.put("devices", devices);
+        this.responseJSON.put("functions", availableCommands);
     }
 
-    public MessageInfo getResponseData(){
+    public MessageInfo getResponseData(AudioDevice audiodevice){
         //reach out to applicable other libraries for information
+
         return this;
     }
 }
