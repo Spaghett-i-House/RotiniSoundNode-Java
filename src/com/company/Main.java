@@ -13,9 +13,10 @@ public class Main {
         AudioDevice AD = AudioDevice.getAudioDeviceInstance();
         System.out.println(AD.getTargetAudioSources());
         System.out.println(AD.getSourceAudioSources());
-        TargetDataLine line = AD.getTargetAudioSources().get("default [default]");
+        TargetDataLine line = AD.getTargetAudioSources().get("Loopback [plughw:2,1]");
         SourceDataLine outline = AD.getSourceAudioSources().get("default [default]");
 	    System.out.println(line.getFormat());
+
 	    AudioFormat format = new AudioFormat(
                 44100f,
                 16,
@@ -33,8 +34,10 @@ public class Main {
         }
 	    int bufferlength = 16;
 	    byte[] buffer = new byte[bufferlength];
+	    int counter = 0;
 	    while(true){
 	        int red = line.read(buffer, 0, buffer.length);
+	        //if pulseaudio is configured correctly should contain all system sound
 	        //System.out.println(red);
 	        int total = 0;
 	        /*for(byte b: buffer) {
