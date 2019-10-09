@@ -1,17 +1,55 @@
 package com.company;
 
-import javax.sound.sampled.*;
-import javax.xml.transform.Source;
-import java.nio.ByteBuffer;
+import com.company.audio.AudioDevice;
+import com.company.networking.UDPServer;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
+        try {
+            UDPServer myServer = new UDPServer(9877);
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
 
-        AudioDevice AD = AudioDevice.getAudioDeviceInstance();
-        System.out.println(AD.getTargetAudioSources());
+    public void usingAudioDataTest() throws InterruptedException{
+        AudioDevice audiod = AudioDevice.getAudioDeviceInstance();
+        System.out.println(audiod.getSourceNames());
+        String firstname = audiod.getSourceNames().iterator().next();
+        System.out.println(firstname);
+        BlockingQueue<byte[]> audioQ = audiod.getOpenDataLine(firstname);
+        while(true){
+            try{
+                byte[] b = audioQ.take();
+                for(byte i: b){
+                    System.out.print(String.format("%d ",i));
+                }
+                System.out.println();
+            } catch (NoSuchElementException e){
+                System.out.println("Nothing to remove");
+            }
+        }
+    }
+
+    private static String findName(ArrayList<String> names, String namecontains){
+        for (String name: names){
+            if(name.contains(namecontains)){
+                return name;
+            }
+        }
+        return null;
+    }
+}
+
+// testing stuff
+        /*System.out.println(AD.getTargetAudioSources());
         System.out.println(AD.getSourceAudioSources());
         TargetDataLine line = AD.getTargetAudioSources().get("Loopback [plughw:2,1]");
         SourceDataLine outline = AD.getSourceAudioSources().get("default [default]");
@@ -39,7 +77,7 @@ public class Main {
 	        int red = line.read(buffer, 0, buffer.length);
 	        //if pulseaudio is configured correctly should contain all system sound
 	        //System.out.println(red);
-	        int total = 0;
+	        int total = 0;*/
 	        /*for(byte b: buffer) {
                 total += b;
             }*/
@@ -50,8 +88,8 @@ public class Main {
                 System.out.print(":");
             }
             System.out.println(total/16);*/
-        }
-        // write your code here
+    //}
+// write your code here
         /*AudioDevice AD = AudioDevice.getAudioDeviceInstance();
         ArrayList<String> names = (AD.getAudioSources());
         System.out.println(names);
@@ -125,15 +163,3 @@ public class Main {
             ex.printStackTrace();
             //...
         }*/
-
-    }
-
-    private static String findName(ArrayList<String> names, String namecontains){
-        for (String name: names){
-            if(name.contains(namecontains)){
-                return name;
-            }
-        }
-        return null;
-    }
-}
